@@ -15,8 +15,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class UserController {
-    @Autowired
-    protected final UserService userService;
+    private final UserService userService;
 
     @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers() {
