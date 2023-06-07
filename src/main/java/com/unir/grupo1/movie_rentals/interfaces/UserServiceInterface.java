@@ -1,7 +1,7 @@
 package com.unir.grupo1.movie_rentals.interfaces;
 
 import com.unir.grupo1.movie_rentals.models.User;
-import com.unir.grupo1.movie_rentals.requests.CreateUserRequest;
+import com.unir.grupo1.movie_rentals.requests.users.CreateUserRequest;
 
 import java.util.List;
 

@@ -3,6 +3,7 @@ package com.unir.grupo1.movie_rentals;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+
 @SpringBootApplication
 public class MovieRentalsApplication {
 
