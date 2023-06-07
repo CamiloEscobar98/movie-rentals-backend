@@ -39,7 +39,7 @@ public class Rental {
     private Timestamp created_at;
 
     @Column(name = "updated_at")
-    @Temporal(TemporalType.TIMESTAMP)
+    @UpdateTimestamp
     private Timestamp updated_at;
 
     @ManyToOne(targetEntity = User.class, cascade = CascadeType.ALL)

@@ -1,47 +1,52 @@
 package com.unir.grupo1.movie_rentals.controllers;
 
+import com.unir.grupo1.movie_rentals.models.Rental;
 import com.unir.grupo1.movie_rentals.models.User;
+import com.unir.grupo1.movie_rentals.requests.rentals.CreateRentalRequest;
+import com.unir.grupo1.movie_rentals.requests.rentals.UpdateRentalRequest;
 import com.unir.grupo1.movie_rentals.requests.users.CreateUserRequest;
 import com.unir.grupo1.movie_rentals.requests.users.UpdateUserRequest;
-import com.unir.grupo1.movie_rentals.services.UserService;
-import lombok.*;
+import com.unir.grupo1.movie_rentals.services.RentalService;
+import lombok.RequiredArgsConstructor;
+import org.hibernate.QueryException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
-public class UserController {
-    private final UserService userService;
+public class RentalController {
+    private final RentalService rentalService;
 
-    @GetMapping("/users")
+    @GetMapping("/rentals")
     public ResponseEntity<Map<String, Object>> index() {
         Map<String, Object> jsonResponse = new HashMap<>();
-        HttpStatus statusCode = HttpStatus.NOT_FOUND;
-        List<User> users = new ArrayList<>();
+        HttpStatus statusCode = null;
+        List<Rental> rentals = new ArrayList<>();
         try {
-            users = userService.getUsers();
+            rentals = rentalService.getRentals();
             statusCode = HttpStatus.OK;
         } catch (ResponseStatusException ex) {
             jsonResponse.put("exception_message", ex.getMessage());
         } catch (Exception e) {
             jsonResponse.put("exception_message", e.getMessage());
         }
-        jsonResponse.put("data", users);
+        jsonResponse.put("data", rentals);
         return ResponseEntity.status(statusCode).body(jsonResponse);
     }
 
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<Map<String, Object>> show(@PathVariable String userId) {
+    @GetMapping("/rentals/{rentalId}")
+    public ResponseEntity<Map<String, Object>> show(@PathVariable String rentalId) {
         Map<String, Object> jsonResponse = new HashMap<>();
         HttpStatus statusCode = null;
-        User user = null;
-        statusCode = HttpStatus.NOT_FOUND;
+        Rental rental = null;
         try {
-            user = userService.getUser(userId);
+            rental = rentalService.getRental(rentalId);
             statusCode = HttpStatus.OK;
         } catch (ResponseStatusException ex) {
             jsonResponse.put("exception_message", "ResponseStatusException:" + ex.getMessage());
@@ -50,21 +55,20 @@ public class UserController {
             jsonResponse.put("exception_message", "Exception:" + e.getMessage());
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        jsonResponse.put("data", user);
+        jsonResponse.put("data", rental);
         return ResponseEntity.status(statusCode).body(jsonResponse);
     }
 
-    @PostMapping("/users")
-    public ResponseEntity<Map<String, Object>> store(@RequestBody CreateUserRequest request) {
+    @PostMapping("/rentals")
+    public ResponseEntity<Map<String, Object>> store(@RequestBody CreateRentalRequest request) {
         Map<String, Object> jsonResponse = new HashMap<>();
+        String message = "No se ha podido registrar la renta de películas";
         HttpStatus statusCode = null;
-        String message = "No se ha registrado correctamente";
-        User userCreated = null;
-        statusCode = HttpStatus.NOT_FOUND;
+        Rental rentalCreated = null;
         try {
-            userCreated = userService.createUser(request);
+            rentalCreated = rentalService.createRental(request);
             statusCode = HttpStatus.OK;
-            message = String.format("Se ha registrado correctamente el usuario %s.", userCreated.getName());
+            message = "Se ha registrado correctamente la renta.";
         } catch (ResponseStatusException ex) {
             jsonResponse.put("exception_message", "ResponseStatusException:" + ex.getMessage());
             statusCode = (HttpStatus) ex.getStatusCode();
@@ -72,23 +76,30 @@ public class UserController {
             jsonResponse.put("exception_message", "Exception:" + e.getMessage());
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        jsonResponse.put("data", userCreated);
+        jsonResponse.put("data", rentalCreated);
         jsonResponse.put("message", message);
         return ResponseEntity.status(statusCode).body(jsonResponse);
     }
 
-    @PutMapping("/users/{userId}")
-    public ResponseEntity<Map<String, Object>> update(@RequestBody UpdateUserRequest request, @PathVariable String userId) {
+    @PutMapping("/rentals/{rentalId}")
+    public ResponseEntity<Map<String, Object>> update(@RequestBody UpdateRentalRequest request, @PathVariable String rentalId) {
         Map<String, Object> jsonResponse = new HashMap<>();
         HttpStatus statusCode = null;
         String message = "No se ha actualizado correctamente";
-        User user = userService.getUser(userId);
-        User userUpdated = null;
-        statusCode = HttpStatus.NOT_FOUND;
+        Rental rental = null;
+        Rental rentalUpdated = null;
+        Date rentedAtParsed = null;
+        Date rentedToParsed = null;
         try {
-            userUpdated = userService.updateUser(request, user);
-            statusCode = HttpStatus.OK;
-            message = String.format("Se ha actualizado correctamente el usuario %s.", userUpdated.getName());
+            rental = rentalService.getRental(rentalId);
+            SimpleDateFormat sdf = new SimpleDateFormat();
+            rentedAtParsed = sdf.parse(request.getRented_at());
+            rentedToParsed = sdf.parse(request.getRented_to());
+            rental.setUser_id(Integer.valueOf(request.getUser_id()));
+            rental.setRented_at(rentedAtParsed);
+            rental.setRented_to(rentedToParsed);
+            rentalUpdated = rentalService.updateRental(request, rental);
+            message = "Se ha actualizado correctamente la renta.";
         } catch (ResponseStatusException ex) {
             jsonResponse.put("exception_message", "ResponseStatusException:" + ex.getMessage());
             statusCode = (HttpStatus) ex.getStatusCode();
@@ -96,21 +107,20 @@ public class UserController {
             jsonResponse.put("exception_message", "Exception:" + e.getMessage());
             statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         }
-        jsonResponse.put("data", userUpdated);
+        jsonResponse.put("data", rentalUpdated);
         jsonResponse.put("message", message);
         return ResponseEntity.status(statusCode).body(jsonResponse);
     }
 
-    @DeleteMapping("/users/{userId}")
-    public ResponseEntity<Map<String, Object>> destroy(@PathVariable String userId) {
+    @DeleteMapping("/rentals/{rentalId}")
+    public ResponseEntity<Map<String, Object>> destroy(@PathVariable String rentalId) {
         Map<String, Object> jsonResponse = new HashMap<>();
         HttpStatus statusCode = null;
         String message = "No se ha eliminado correctamente.";
         try {
-            User user = userService.getUser(userId);
-            userService.deleteUser(userId);
+            rentalService.deleteRental(rentalId);
             statusCode = HttpStatus.OK;
-            message = String.format("Se ha eliminado correctamente %s.", user.getName());
+            message = "Se ha eliminado correctamente la renta.";
         } catch (ResponseStatusException ex) {
             jsonResponse.put("exception_message", "ResponseStatusException:" + ex.getMessage());
             statusCode = (HttpStatus) ex.getStatusCode();
@@ -120,5 +130,6 @@ public class UserController {
         }
         jsonResponse.put("message", message);
         return ResponseEntity.status(statusCode).body(jsonResponse);
+
     }
 }

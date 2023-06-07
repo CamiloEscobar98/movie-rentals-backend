@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService implements UserServiceInterface {
@@ -38,6 +37,8 @@ public class UserService implements UserServiceInterface {
 
     public User updateUser(UpdateUserRequest request, User user) {
         if (request != null && request.hasName() && request.hasEmail()) {
+            user.setName(request.getName());
+            user.setEmail(request.getEmail());
             return userRepository.save(user);
         }
         return null;
