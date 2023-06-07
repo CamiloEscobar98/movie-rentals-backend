@@ -6,7 +6,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
-import java.util.Date;
 
 @Entity
 @Data
@@ -27,12 +26,10 @@ public class Rental {
     private Float total;
 
     @Column(name = "rented_at")
-    @Temporal(TemporalType.DATE)
-    private Date rented_at;
+    private String rented_at;
 
     @Column(name = "rented_to")
-    @Temporal(TemporalType.DATE)
-    private Date rented_to;
+    private String rented_to;
 
     @Column(name = "created_at")
     @CreationTimestamp

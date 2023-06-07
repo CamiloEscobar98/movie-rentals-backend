@@ -10,8 +10,6 @@ public class UpdateRentalRequest extends AbstractRequest {
     private @Getter String rented_at;
     private @Getter String rented_to;
 
-    private UserRepository userRepository;
-
     public Boolean hasUser() {
         return this.hasLength(this.user_id.trim());
     }
@@ -26,9 +24,5 @@ public class UpdateRentalRequest extends AbstractRequest {
 
     public Boolean hasRentendTo() {
         return this.hasLength(this.rented_to.trim());
-    }
-
-    public Boolean userExist() {
-        return userRepository.findById(Long.valueOf(this.user_id)).isPresent();
     }
 }

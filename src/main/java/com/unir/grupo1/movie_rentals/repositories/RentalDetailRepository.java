@@ -1,10 +1,16 @@
 package com.unir.grupo1.movie_rentals.repositories;
 
-import com.unir.grupo1.movie_rentals.models.RentailDetail;
+import com.unir.grupo1.movie_rentals.models.RentalDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface RentalDetailRepository extends JpaRepository<RentailDetail, Long> {
-    //List<RentailDetail> findByRental(String rental_id);
+@EnableJpaRepositories
+@Repository
+public interface RentalDetailRepository extends JpaRepository<RentalDetail, Long> {
+    List<RentalDetail> findByRentalId(Long rentalId);
+
+    RentalDetail findByRentalIdAndMovieId (Long rentalId, Long movieId);
 }

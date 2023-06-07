@@ -8,23 +8,13 @@ import com.unir.grupo1.movie_rentals.requests.users.UpdateUserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UserService implements UserServiceInterface {
     @Autowired
     private UserRepository userRepository;
-
-    @Override
-    public List<User> getUsers() {
-        List<User> users = userRepository.findAll();
-        return users.isEmpty() ? null : users;
-    }
-
-    @Override
-    public User getUser(String userId) {
-        return userRepository.findById(Long.valueOf(userId)).orElse(null);
-    }
 
     @Override
     public User createUser(CreateUserRequest request) {
@@ -35,6 +25,18 @@ public class UserService implements UserServiceInterface {
         return null;
     }
 
+    @Override
+    public List<User> getUsers() {
+        List<User> users = userRepository.findAll();
+        return users.isEmpty() ? new ArrayList<>() : users;
+    }
+
+    @Override
+    public User getUser(String userId) {
+        return userRepository.findById(Long.valueOf(userId)).orElse(null);
+    }
+
+    @Override
     public User updateUser(UpdateUserRequest request, User user) {
         if (request != null && request.hasName() && request.hasEmail()) {
             user.setName(request.getName());

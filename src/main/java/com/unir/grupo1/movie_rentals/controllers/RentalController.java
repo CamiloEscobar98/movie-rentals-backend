@@ -1,21 +1,16 @@
 package com.unir.grupo1.movie_rentals.controllers;
 
 import com.unir.grupo1.movie_rentals.models.Rental;
-import com.unir.grupo1.movie_rentals.models.User;
 import com.unir.grupo1.movie_rentals.requests.rentals.CreateRentalRequest;
 import com.unir.grupo1.movie_rentals.requests.rentals.UpdateRentalRequest;
-import com.unir.grupo1.movie_rentals.requests.users.CreateUserRequest;
-import com.unir.grupo1.movie_rentals.requests.users.UpdateUserRequest;
 import com.unir.grupo1.movie_rentals.services.RentalService;
-import lombok.RequiredArgsConstructor;
-import org.hibernate.QueryException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import lombok.RequiredArgsConstructor;
+
 import java.util.*;
 
 @RestController
@@ -88,17 +83,13 @@ public class RentalController {
         String message = "No se ha actualizado correctamente";
         Rental rental = null;
         Rental rentalUpdated = null;
-        Date rentedAtParsed = null;
-        Date rentedToParsed = null;
         try {
             rental = rentalService.getRental(rentalId);
-            SimpleDateFormat sdf = new SimpleDateFormat();
-            rentedAtParsed = sdf.parse(request.getRented_at());
-            rentedToParsed = sdf.parse(request.getRented_to());
             rental.setUser_id(Integer.valueOf(request.getUser_id()));
-            rental.setRented_at(rentedAtParsed);
-            rental.setRented_to(rentedToParsed);
+            rental.setRented_at(request.getRented_at());
+            rental.setRented_to(request.getRented_to());
             rentalUpdated = rentalService.updateRental(request, rental);
+            statusCode = HttpStatus.OK;
             message = "Se ha actualizado correctamente la renta.";
         } catch (ResponseStatusException ex) {
             jsonResponse.put("exception_message", "ResponseStatusException:" + ex.getMessage());
@@ -118,6 +109,7 @@ public class RentalController {
         HttpStatus statusCode = null;
         String message = "No se ha eliminado correctamente.";
         try {
+            Rental rentalAux = rentalService.getRental(rentalId);
             rentalService.deleteRental(rentalId);
             statusCode = HttpStatus.OK;
             message = "Se ha eliminado correctamente la renta.";

@@ -9,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -21,24 +20,9 @@ public class RentalService implements RentalServiceInterface {
     @Override
     public Rental createRental(CreateRentalRequest request) {
 
-        if (request != null && request.hasUser() && request.hasTotal()
-                && request.hasRentendAt() && request.hasRentendTo()
-            // && request.userExist()
-        ) {
-            Date rentedAtParsed = null;
-            Date rentedToParsed = null;
-            try {
-                SimpleDateFormat sdf = new SimpleDateFormat();
-                rentedAtParsed = sdf.parse(request.getRented_at());
-                rentedToParsed = sdf.parse(request.getRented_to());
-            } catch (ParseException e) {
-                return null;
-            }
-            Rental rental = Rental.builder()
-                    .user_id(Integer.valueOf(request.getUser_id()))
-                    .rented_at(rentedAtParsed)
-                    .rented_to(rentedToParsed)
-                    .build();
+        if (request != null && request.hasUser() && request.hasTotal() && request.hasRentendAt() && request.hasRentendTo()) {
+            Rental rental = Rental.builder().user_id(Integer.valueOf(request.getUser_id())).total(Float.valueOf(request.getTotal())).rented_at(request.getRented_at()).rented_to(request.getRented_to()).build();
+            return rentalRepository.save(rental);
         }
         return null;
     }
@@ -46,7 +30,7 @@ public class RentalService implements RentalServiceInterface {
     @Override
     public List<Rental> getRentals() {
         List<Rental> rentals = rentalRepository.findAll();
-        return rentals.isEmpty() ? null : rentals;
+        return rentals.isEmpty() ? new ArrayList<>() : rentals;
     }
 
     @Override
@@ -54,9 +38,9 @@ public class RentalService implements RentalServiceInterface {
         return rentalRepository.findById(Long.valueOf(rentalId)).orElse(null);
     }
 
+    @Override
     public Rental updateRental(UpdateRentalRequest request, Rental rental) {
-        if (request != null && request.hasUser() && request.hasTotal()
-                && request.hasRentendAt() && request.hasRentendTo() && request.userExist()) {
+        if (request != null && request.hasUser() && request.hasTotal() && request.hasRentendAt() && request.hasRentendTo()) {
             return rentalRepository.save(rental);
         }
         return null;

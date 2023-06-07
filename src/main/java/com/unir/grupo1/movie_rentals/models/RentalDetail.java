@@ -10,15 +10,14 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @ToString
-public class RentailDetail {
+public class RentalDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(targetEntity = Rental.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "rental_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private Rental user;
+    @Column(name = "rental_id")
+    private Integer rentalId;
 
     @Column(name = "movie_id")
-    private Integer movie_id;
+    private Integer movieId;
 }
