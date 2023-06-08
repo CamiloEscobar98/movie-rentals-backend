@@ -258,3 +258,59 @@ Su modelo de respuesta es la siguiente:
   "message": "Se ha eliminado correctamente."
 }
 ```
+
+### Recurso Peliculas Rentadas
+
+#### 1. http://localhost:8080/rentals/{rentalId}/movies (GET)
+
+Lista de todos las peliculas que pertenece a la renta del sistema.
+
+Su modelo de respuesta es el siguiente:
+
+```
+{
+  "data": [
+    {
+      "id": 6,
+      "rentalId": 1,
+      "movieId": 3
+    }
+  ]
+}
+```
+
+#### 2. http://localhost:8080/rentals/{rentalId}/movies (POST)
+
+Para poder agregar una pelicula a la lista de peliculas de la renta es necesario colocar el identificador de la renta y
+el identificador de la pelicula lo envias por el cuerpo de la petición.
+
+```
+{
+  "movie_id": 3
+}
+```
+
+Su modelo de respuesta es el siguiente:
+
+```
+{
+  "data": {
+    "id": 6,
+    "rentalId": 1,
+    "movieId": 3,
+    "rental": null
+  },
+  "message": "Se ha registrado correctamente la pelicula en la renta."
+}
+```
+
+#### 5. http://localhost:8080/rentals/{rentalId}/movies/{movieId} (DELETE)
+
+Para poder eliminar o desvincular una pelicula de la lista de peliculas de una renta, es necesario pasar el
+identificador de la renta y el identificador de la pelicula.
+
+```
+{
+  "message": "Se ha eliminado correctamente."
+}
+```
