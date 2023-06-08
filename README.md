@@ -128,8 +128,7 @@ Su modelo de respuesta es la siguiente:
 
 #### 1. http://localhost:8080/rentals (GET)
 
-Lista de todos los usuarios del sistema. Usuarios del tipo @Cliente, que se relaciona
-directamente con los alquileres de peliculas.
+Lista de todos las rentas del sistema.
 
 Su modelo de respuesta es el siguiente:
 
@@ -152,7 +151,7 @@ Su modelo de respuesta es el siguiente:
 
 #### 2. http://localhost:8080/rentals/{rentalId} (GET)
 
-Por medio de un identificador de usuario ID, es posible buscar la información del usuario.
+Por medio de un identificador de la renta ID, es posible buscar la información de esa renta de peliculas.
 
 Su modelo de respuesta es el siguiente:
 
@@ -179,8 +178,8 @@ Su modelo de respuesta es el siguiente:
 
 #### 3. http://localhost:8080/rentals (POST)
 
-Para poder guardar la información de un usuario es necesario mandar en el body o el cuerpo de la petición,
-información como el nombre y el correo electrónico del usuario. Acá un ejemplo:
+Para poder guardar la información de una renta es necesario mandar en el body o el cuerpo de la petición,
+información como el usuario que hace la renta, sus fechas y su costo. Acá un ejemplo:
 
 ```
 {
@@ -211,7 +210,7 @@ Su modelo de respuesta es el siguiente:
 
 #### 4. http://localhost:8080/rentals/{rentalId} (PUT)
 
-Para poder actualizar la información de un usuario es necesario pasar el identificador del usuario en la url y en su
+Para poder actualizar la información de una renta es necesario pasar el identificador de la renta en la url y en su
 cuerpo de petición, colocar la información a actualizar, Acá un ejemplo:
 
 ```
@@ -249,7 +248,7 @@ Su modelo de respuesta es el siguiente:
 
 #### 5. http://localhost:8080/rentals/{rentalId} (DELETE)
 
-Para poder eliminar un usuario del sistema, es necesario pasar su identificador de usuario por medio de la url. Con esto
+Para poder eliminar una renta del sistema, es necesario pasar su identificador de renta por medio de la url. Con esto
 se hará una validación de si existe y si puede eliminarse.
 
 Su modelo de respuesta es la siguiente:
